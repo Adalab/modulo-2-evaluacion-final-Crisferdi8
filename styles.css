@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+input,
+button {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.js-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.js-list li {
+    display: inline-block;
+    margin: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 210px;
+    text-align: center;
+}
+
+.js-favorites {
+    list-style-type: none;
+    padding: 0;
+}
+
+.js-favorites li {
+    margin-bottom: 5px;
+}
+
+.favorito {
+    background-color: #ffeb3b;
+    color: #000;
+}
