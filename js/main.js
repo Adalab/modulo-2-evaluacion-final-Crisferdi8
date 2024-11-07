@@ -19,11 +19,13 @@
 const inputSearch = document.querySelector(".js-input");
 const btnSearch = document.querySelector(".js-button");
 const list = document.querySelector(".js-list");
+const favoriteList = document.querySelector("js-favorites")
 
 
 const inputValue = inputSearch.value;
 
 let animeTitle = [];
+let favoriteSeries = [];
 
 function handleSearch() {
     const inputValue = inputSearch.value.toLowerCase();
@@ -38,6 +40,35 @@ function handleSearch() {
 
 inputSearch.addEventListener("input", handleSearch);
 
+
+//series favoritas
+
+function handleAddFavorite(event) {
+    console.log("has hecho click");
+    console.log(event.currentTarget.id);
+    const idSeriesClicked = event.currentTarget.id;
+
+    //buscar la paleta clickada a partir de ese id
+    const serieSelected = animeTitle.find((serie) => {
+        return serie.id === idSeriesClicked;
+    })
+    console.log(serieSelected)
+    //añadir las series clickadas a favoritas
+    favoriteSeries.push(serieSelected)
+
+    //pintar las series favoritas
+    for (const serie of favoriteSeries)
+
+        favoriteList.innerHTML = "";
+    let content = `
+            <div class="container js-series" id="${anime.mal_id}">
+                <h5>${anime.title}</h5>
+                <img src="${imageUrl}" alt="${anime.title}">
+            </div>
+        `;
+    favoriteList.innerHTML += content;
+
+}
 
 function searchButton(event) {
     event.preventDefault()
@@ -87,11 +118,18 @@ function renderSeries(series) {
 
         // Crear el contenido HTML para cada serie
         let content = `
-            <div class="container">
+            <div class="container js-series" id="${anime.mal_id}">
                 <h5>${anime.title}</h5>
                 <img src="${imageUrl}" alt="${anime.title}">
             </div>
         `;
         list.innerHTML += content;  // Agregar el contenido a la lista
+
+        //series fav
+
+        const allSeries = document.querySelectorAll(".js-series");
+        for (const seriesDOM of allSeries) {
+            seriesDOM.addEventListener("click", handleAddFavorite);
+        }
     });
 }
