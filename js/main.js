@@ -19,42 +19,79 @@
 const inputSearch = document.querySelector(".js-input");
 const btnSearch = document.querySelector(".js-button");
 const list = document.querySelector(".js-list");
-const title1 = document.querySelector(".js-title");
-const image = document.querySelector(".js-image");
 
 
 const inputValue = inputSearch.value;
 
-fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        const animeTitle = data.data;
-        const anime = animeTitle[0];
-        console.log(anime)
+let animeTitle = [];
+
+function handleSearch() {
+    const inputValue = inputSearch.value.toLowerCase();
+    console.log(inputValue);
+
+    // Filtrar las series según el nombre
+    const filteredSeries = animeTitle.filter(anime => anime.title.toLowerCase().includes(inputValue));
+
+    // Renderizar las series filtradas
+    renderSeries(filteredSeries);
+}
+
+inputSearch.addEventListener("input", handleSearch);
 
 
-        let content = "";
-        content +=
-            `<div class="container"> 
-        <h5>${anime.title}</h5>
-        `
-        for (const title of animeTitle)
-            console.log(title.title);
-        content = `<img src="${anime.images.jpg.image_url}" alt="${anime.title}"></img>`
-        content += "</div >";
-        list.innerHTML = content;
+function searchButton(event) {
+    event.preventDefault()
+    fetchSeries();
+}
+btnSearch.addEventListener("click", searchButton)
 
-        let imageUrl = anime.images.jpg.image_url; // Supongamos que esta es la URL de la imagen obtenida de la API
+fetchSeries();
+
+
+function fetchSeries() {
+    const inputValue = inputSearch.value;
+
+    fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
+        .then(response => response.json())
+        .then(data => {
+            animeTitle = data.data;  // Almacenar todas las series obtenidas en la variable global animeTitle
+
+
+            // Renderizar todas las series obtenidas
+            renderSeries(animeTitle);
+            //guardar en el localStorage
+            localStorage.setItem("seriesInfo", JSON.stringify(animeTitle));
+        })
+}
+const seriesLocalStorage = JSON.parse(localStorage.getItem("seriesInfo"))
+console.log(seriesLocalStorage)
+
+if (seriesLocalStorage !== null) {
+    renderSeries(seriesLocalStorage);
+} else {
+    fetchSeries();
+}
+
+
+// Función para mostrar las series en el HTML
+function renderSeries(series) {
+    list.innerHTML = '';  // Limpiar la lista antes de agregar nuevas series
+
+    series.forEach(anime => {
+        let imageUrl = anime.images.jpg.image_url;
 
         // Verificamos si la URL de la imagen es la que queremos reemplazar
         if (imageUrl === "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png") {
-            // Si coincide, asignamos una URL alternativa
-            imageUrl = "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";
+            imageUrl = "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";  // URL alternativa
         }
 
-
-    })
-
-
-
+        // Crear el contenido HTML para cada serie
+        let content = `
+            <div class="container">
+                <h5>${anime.title}</h5>
+                <img src="${imageUrl}" alt="${anime.title}">
+            </div>
+        `;
+        list.innerHTML += content;  // Agregar el contenido a la lista
+    });
+}
