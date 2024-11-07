@@ -19,19 +19,42 @@
 const inputSearch = document.querySelector(".js-input");
 const btnSearch = document.querySelector(".js-button");
 const list = document.querySelector(".js-list");
-const title = document.querySelector(".js-title");
+const title1 = document.querySelector(".js-title");
 const image = document.querySelector(".js-image");
 
-inputSearch =
 
-    fetch(" https://api.jikan.moe/v4/anime?q=naruto")
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            const animeTitle = data.data;
-            console.log(animeTitle)
+const inputValue = inputSearch.value;
 
-        })
+fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        const animeTitle = data.data;
+        const anime = animeTitle[0];
+        console.log(anime)
+
+
+        let content = "";
+        content +=
+            `<div class="container"> 
+        <h5>${anime.title}</h5>
+        `
+        for (const title of animeTitle)
+            console.log(title.title);
+        content = `<img src="${anime.images.jpg.image_url}" alt="${anime.title}"></img>`
+        content += "</div >";
+        list.innerHTML = content;
+
+        let imageUrl = anime.images.jpg.image_url; // Supongamos que esta es la URL de la imagen obtenida de la API
+
+        // Verificamos si la URL de la imagen es la que queremos reemplazar
+        if (imageUrl === "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png") {
+            // Si coincide, asignamos una URL alternativa
+            imageUrl = "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";
+        }
+
+
+    })
 
 
 
