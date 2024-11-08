@@ -7,7 +7,7 @@
 /* Estilo de la columna de favoritas */
 .favorites-container {
     width: 250px;
-    background-color: #f1f1f1;
+    background-color: #70c0c2;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -16,6 +16,8 @@
 /* Estilo de la columna de búsqueda y resultados */
 .search-results-container {
     flex-grow: 1;
+    background-color: rgba(176, 201, 75, 0.474);
+    border-radius: 5px;
 }
 
 /* Estilos para las secciones de favoritos y resultados */
@@ -27,7 +29,7 @@ section.js-list {
 section.js-favorites .container,
 section.js-list .container {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #140202;
     border-radius: 5px;
     margin-bottom: 10px;
     text-align: center;

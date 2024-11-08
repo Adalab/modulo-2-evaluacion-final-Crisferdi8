@@ -34,6 +34,7 @@ const list = document.querySelector(".js-list");
 const favoriteList = document.querySelector(".js-favorites");
 
 let animeTitle = [];
+//Si la usuaria ha accedido a la página más veces mostrar su listado de favoritos, si no vacío
 let favoriteSeries = JSON.parse(localStorage.getItem("favoriteSeries")) || [];
 
 // Buscar series con el valor que escribe la usuaria
@@ -50,7 +51,7 @@ function handleAddFavorite(event) {
     const idSeriesClicked = event.currentTarget.id;
     const serieSelected = animeTitle.find(serie => serie.mal_id === parseInt(idSeriesClicked));
 
-    // Evita duplicados en favoritos
+    // Evitar duplicados en favoritos(EXTRA)
     if (!favoriteSeries.some(fav => fav.mal_id === serieSelected.mal_id)) {
         favoriteSeries.push(serieSelected);
     }
@@ -64,29 +65,31 @@ function handleAddFavorite(event) {
     titleElement.classList.add("selected");
 }
 
-// Renderizar lista de series favoritas
+// Pintar lista de series favoritas
 function renderFavorites() {
     favoriteList.innerHTML = "";
     favoriteSeries.forEach(anime => {
+        //Si no contiene su imagen añadirle el placeholder
         const imageUrl = anime.images.jpg.image_url || "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";
         const content = `
             <div class="container js-series" id="${anime.mal_id}">
                 <h5>${anime.title}</h5>
                 <img src="${imageUrl}" alt="${anime.title}">
+                <button class="remove-favorite-btn" data-id="${anime.mal_id}">Eliminar</button>
             </div>
         `;
         favoriteList.innerHTML += content;
     });
 }
 
-// Click en el botón buscar
+// Click en el botón buscar y accedemos a la API
 function searchButton(event) {
     event.preventDefault();
     fetchSeries();
 }
 btnSearch.addEventListener("click", searchButton);
 
-// Fetch series desde API
+// Fetch con el valor que escribe la usuaria en el input y esperamos respuesta del servidor y llamamos a renderseries para pintar las imágenes
 function fetchSeries() {
     const inputValue = inputSearch.value;
     fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
@@ -97,7 +100,7 @@ function fetchSeries() {
         });
 }
 
-// Renderizar series de búsqueda
+// Pintar las series, si no tiene imagen, añade placeholder
 function renderSeries(series) {
     list.innerHTML = '';
     series.forEach(anime => {
@@ -121,5 +124,5 @@ function renderSeries(series) {
     });
 }
 
-// Cargar favoritos desde localStorage al iniciar la aplicación
+// Cargar favoritos desde localStorage al iniciar la página
 renderFavorites();
