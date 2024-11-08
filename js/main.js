@@ -15,121 +15,94 @@
 
             -Seleccionar los elementos del HTML
  */
-
 const inputSearch = document.querySelector(".js-input");
 const btnSearch = document.querySelector(".js-button");
 const list = document.querySelector(".js-list");
-const favoriteList = document.querySelector("js-favorites")
-
-
-const inputValue = inputSearch.value;
+const favoriteList = document.querySelector(".js-favorites");
 
 let animeTitle = [];
-let favoriteSeries = [];
+let favoriteSeries = JSON.parse(localStorage.getItem("favoriteSeries")) || [];
 
+// Buscar series con el valor que escribe la usuaria
 function handleSearch() {
     const inputValue = inputSearch.value.toLowerCase();
-    console.log(inputValue);
-
-    // Filtrar las series según el nombre
     const filteredSeries = animeTitle.filter(anime => anime.title.toLowerCase().includes(inputValue));
-
-    // Renderizar las series filtradas
     renderSeries(filteredSeries);
 }
 
 inputSearch.addEventListener("input", handleSearch);
 
-
-//series favoritas
-
+// Añadir a favoritos
 function handleAddFavorite(event) {
-    console.log("has hecho click");
-    console.log(event.currentTarget.id);
     const idSeriesClicked = event.currentTarget.id;
+    const serieSelected = animeTitle.find(serie => serie.mal_id === parseInt(idSeriesClicked));
 
-    //buscar la paleta clickada a partir de ese id
-    const serieSelected = animeTitle.find((serie) => {
-        return serie.id === idSeriesClicked;
-    })
-    console.log(serieSelected)
-    //añadir las series clickadas a favoritas
-    favoriteSeries.push(serieSelected)
+    // Evita duplicados
+    if (!favoriteSeries.some(fav => fav.mal_id === serieSelected.mal_id)) {
+        favoriteSeries.push(serieSelected);
+    }
 
-    //pintar las series favoritas
-    for (const serie of favoriteSeries)
+    // Guardar favoritos en localStorage
+    localStorage.setItem("favoriteSeries", JSON.stringify(favoriteSeries));
+    renderFavorites();
+}
 
-        favoriteList.innerHTML = "";
-    let content = `
+// Renderizar lista de series favoritas
+function renderFavorites() {
+    favoriteList.innerHTML = "";
+    favoriteSeries.forEach(anime => {
+        const imageUrl = anime.images.jpg.image_url || "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";
+        const content = `
             <div class="container js-series" id="${anime.mal_id}">
                 <h5>${anime.title}</h5>
                 <img src="${imageUrl}" alt="${anime.title}">
             </div>
         `;
-    favoriteList.innerHTML += content;
-
+        favoriteList.innerHTML += content;
+    });
 }
 
+// Click en el botón buscar
 function searchButton(event) {
-    event.preventDefault()
+    event.preventDefault();
     fetchSeries();
 }
-btnSearch.addEventListener("click", searchButton)
+btnSearch.addEventListener("click", searchButton);
 
-fetchSeries();
-
-
+// Fetch series desde API
 function fetchSeries() {
     const inputValue = inputSearch.value;
-
     fetch(`https://api.jikan.moe/v4/anime?q=${inputValue}`)
         .then(response => response.json())
         .then(data => {
-            animeTitle = data.data;  // Almacenar todas las series obtenidas en la variable global animeTitle
-
-
-            // Renderizar todas las series obtenidas
+            animeTitle = data.data;
             renderSeries(animeTitle);
-            //guardar en el localStorage
-            localStorage.setItem("seriesInfo", JSON.stringify(animeTitle));
-        })
-}
-const seriesLocalStorage = JSON.parse(localStorage.getItem("seriesInfo"))
-console.log(seriesLocalStorage)
-
-if (seriesLocalStorage !== null) {
-    renderSeries(seriesLocalStorage);
-} else {
-    fetchSeries();
+        });
 }
 
-
-// Función para mostrar las series en el HTML
+// Renderizar series de búsqueda
 function renderSeries(series) {
-    list.innerHTML = '';  // Limpiar la lista antes de agregar nuevas series
-
+    list.innerHTML = '';
     series.forEach(anime => {
         let imageUrl = anime.images.jpg.image_url;
-
-        // Verificamos si la URL de la imagen es la que queremos reemplazar
         if (imageUrl === "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png") {
-            imageUrl = "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";  // URL alternativa
+            imageUrl = "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";
         }
 
-        // Crear el contenido HTML para cada serie
-        let content = `
+        const content = `
             <div class="container js-series" id="${anime.mal_id}">
                 <h5>${anime.title}</h5>
                 <img src="${imageUrl}" alt="${anime.title}">
             </div>
         `;
-        list.innerHTML += content;  // Agregar el contenido a la lista
+        list.innerHTML += content;
+    });
 
-        //series fav
-
-        const allSeries = document.querySelectorAll(".js-series");
-        for (const seriesDOM of allSeries) {
-            seriesDOM.addEventListener("click", handleAddFavorite);
-        }
+    // Añadir evento de clic a cada serie para añadir a favoritos
+    document.querySelectorAll(".js-series").forEach(seriesDOM => {
+        seriesDOM.addEventListener("click", handleAddFavorite);
     });
 }
+
+// Cargar favoritos desde localStorage al iniciar la aplicación
+renderFavorites();

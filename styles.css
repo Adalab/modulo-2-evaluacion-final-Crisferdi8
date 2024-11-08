@@ -1,10 +1,42 @@
-.js-list {
+.main-container {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
 }
 
-.js-favorites {
-    display: flex;
-    flex-direction: column-reverse;
+/* Estilo de la columna de favoritas */
+.favorites-container {
+    width: 250px;
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de la columna de búsqueda y resultados */
+.search-results-container {
+    flex-grow: 1;
+}
+
+/* Estilos para las secciones de favoritos y resultados */
+section.js-favorites,
+section.js-list {
+    margin-top: 10px;
+}
+
+section.js-favorites .container,
+section.js-list .container {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.container img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 5px;
 }
