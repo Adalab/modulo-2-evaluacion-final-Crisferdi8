@@ -15,6 +15,19 @@
 
             -Seleccionar los elementos del HTML
  */
+
+/*
+3.AÑADIR A FAAVORITOS
+    -Cuando la usuaria haga click en una serie de las que haya buscado, se añadirá a la lista de favoritos
+    -La serie que elija la usuaria en el bloque de resultados se marcará de una manera distinta
+    -He añadido también la funcionalidad de que si la serie ya está en favoritos, no vuelva a repetirse
+ */
+
+/*
+4.GUARDAR FAVORITOS EN EL LOCAL STORAGE
+    -Si es la primera vez que la usuaria accede a la página, la lista de favoritos estará vacia pero si ha entrado más veces debe arrancarse la página 
+        con la lista de favoritos que tiene guardada en el localStorage
+*/
 const inputSearch = document.querySelector(".js-input");
 const btnSearch = document.querySelector(".js-button");
 const list = document.querySelector(".js-list");
@@ -37,7 +50,7 @@ function handleAddFavorite(event) {
     const idSeriesClicked = event.currentTarget.id;
     const serieSelected = animeTitle.find(serie => serie.mal_id === parseInt(idSeriesClicked));
 
-    // Evita duplicados
+    // Evita duplicados en favoritos
     if (!favoriteSeries.some(fav => fav.mal_id === serieSelected.mal_id)) {
         favoriteSeries.push(serieSelected);
     }
@@ -45,6 +58,10 @@ function handleAddFavorite(event) {
     // Guardar favoritos en localStorage
     localStorage.setItem("favoriteSeries", JSON.stringify(favoriteSeries));
     renderFavorites();
+
+    // Cambiar estilo del título de la serie seleccionada
+    const titleElement = event.currentTarget.querySelector("h5");
+    titleElement.classList.add("selected");
 }
 
 // Renderizar lista de series favoritas
@@ -98,7 +115,7 @@ function renderSeries(series) {
         list.innerHTML += content;
     });
 
-    // Añadir evento de clic a cada serie para añadir a favoritos
+    // Añadir evento de click a cada serie para añadir a favoritos
     document.querySelectorAll(".js-series").forEach(seriesDOM => {
         seriesDOM.addEventListener("click", handleAddFavorite);
     });
