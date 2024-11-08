@@ -33,14 +33,17 @@ const btnSearch = document.querySelector(".js-button");
 const list = document.querySelector(".js-list");
 const favoriteList = document.querySelector(".js-favorites");
 
+
+//La lista de resultados de primeras está vacía
 let animeTitle = [];
 //Si la usuaria ha accedido a la página más veces mostrar su listado de favoritos, si no vacío
 let favoriteSeries = JSON.parse(localStorage.getItem("favoriteSeries")) || [];
 
 // Buscar series con el valor que escribe la usuaria
 function handleSearch() {
-    const inputValue = inputSearch.value.toLowerCase();
+    const inputValue = inputSearch.value.toLowerCase();  //Añado tolowerCase para que no distiga entre may y min
     const filteredSeries = animeTitle.filter(anime => anime.title.toLowerCase().includes(inputValue));
+    //Llamo a renderSeries para que me pinte las series que coincidan con algún valor
     renderSeries(filteredSeries);
 }
 
@@ -60,7 +63,7 @@ function handleAddFavorite(event) {
     localStorage.setItem("favoriteSeries", JSON.stringify(favoriteSeries));
     renderFavorites();
 
-    // Cambiar estilo del título de la serie seleccionada
+    // Cambiar estilo del título de la serie seleccionada en resultados, añadiendole una clase
     const titleElement = event.currentTarget.querySelector("h5");
     titleElement.classList.add("selected");
 }
@@ -103,6 +106,7 @@ function fetchSeries() {
 // Pintar las series, si no tiene imagen, añade placeholder
 function renderSeries(series) {
     list.innerHTML = '';
+    //El forEach itera sobre cada elemento
     series.forEach(anime => {
         let imageUrl = anime.images.jpg.image_url;
         if (imageUrl === "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png") {
@@ -119,10 +123,12 @@ function renderSeries(series) {
     });
 
     // Añadir evento de click a cada serie para añadir a favoritos
+    //El forEach itera sobre cada elemento, en este caso seriesDOM
+    //Una vez ha oido el clik lo añade a lista de favoritos(handleAddFavorites)
     document.querySelectorAll(".js-series").forEach(seriesDOM => {
         seriesDOM.addEventListener("click", handleAddFavorite);
     });
 }
 
-// Cargar favoritos desde localStorage al iniciar la página
+// Carga favoritos desde localStorage al iniciar la página
 renderFavorites();
