@@ -49,3 +49,7 @@ section.js-list .container {
     padding: 5px;
     border-radius: 3px;
 }
+
+.collapsed {
+    display: none;
+}

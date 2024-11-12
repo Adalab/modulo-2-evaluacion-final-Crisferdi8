@@ -34,6 +34,8 @@ const list = document.querySelector(".js-list");
 const favoriteList = document.querySelector(".js-favorites");
 
 
+
+
 //La lista de resultados de primeras está vacía
 let animeTitle = [];
 //Si la usuaria ha accedido a la página más veces mostrar su listado de favoritos, si no vacío
@@ -45,6 +47,7 @@ function handleSearch() {
     const filteredSeries = animeTitle.filter(anime => anime.title.toLowerCase().includes(inputValue));
     //Llamo a renderSeries para que me pinte las series que coincidan con algún valor
     renderSeries(filteredSeries);
+
 }
 
 inputSearch.addEventListener("input", handleSearch);
@@ -70,6 +73,7 @@ function handleAddFavorite(event) {
 
 // Pintar lista de series favoritas
 function renderFavorites() {
+
     favoriteList.innerHTML = "";
     favoriteSeries.forEach(anime => {
         //Si no contiene su imagen añadirle el placeholder
@@ -78,12 +82,22 @@ function renderFavorites() {
             <div class="container js-series" id="${anime.mal_id}">
                 <h5>${anime.title}</h5>
                 <img src="${imageUrl}" alt="${anime.title}">
-                <button class="remove-favorite-btn" data-id="${anime.mal_id}">Eliminar</button>
+                <button class="remove-favorite-btn  js-remove" data-id="${anime.mal_id}">Eliminar</button>
             </div>
         `;
         favoriteList.innerHTML += content;
+        // console.log(favoriteSeries)
+
+
     });
 }
+const message = document.querySelector(".js-fav-series")
+message.innerHTML = (favoriteSeries.length);
+//pinta el número de series favoritas que tengo en la lista de favo
+console.log(favoriteSeries.length)
+
+//caundo la usuaria haga click en el boton busar, añadirle también el título de la serie en Japones
+
 
 // Click en el botón buscar y accedemos a la API
 function searchButton(event) {
@@ -100,26 +114,31 @@ function fetchSeries() {
         .then(data => {
             animeTitle = data.data;
             renderSeries(animeTitle);
+
         });
+
 }
 
 // Pintar las series, si no tiene imagen, añade placeholder
 function renderSeries(series) {
     list.innerHTML = '';
-    //El forEach itera sobre cada elemento
+    //El bucle forEach itera sobre cada elemento
     series.forEach(anime => {
         let imageUrl = anime.images.jpg.image_url;
         if (imageUrl === "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png") {
             imageUrl = "https://via.placeholder.com/210x295/ffffff/666666/?text=TV.";
         }
+        const animeJaponese = anime.title_japanese ? anime.title_japanese : "";
 
         const content = `
             <div class="container js-series" id="${anime.mal_id}">
                 <h5>${anime.title}</h5>
                 <img src="${imageUrl}" alt="${anime.title}">
+                <p>${animeJaponese}</p>
             </div>
         `;
         list.innerHTML += content;
+
     });
 
     // Añadir evento de click a cada serie para añadir a favoritos

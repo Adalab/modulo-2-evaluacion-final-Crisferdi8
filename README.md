@@ -1,3 +1,4 @@
+
 ## BUSCADOR DE SERIES ANIME
 
   Se trata de una página donde hay un servidor que tiene series de Anime y nosotros a través de peticiones interactuamos con él, cuando la usuaria 
@@ -15,3 +16,4 @@
   Espero que disfrutes de la experiencia.
 
   Trabajo realizado por Cristina María Fernández Díaz.
+
